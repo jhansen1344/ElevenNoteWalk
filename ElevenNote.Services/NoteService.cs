@@ -1,4 +1,6 @@
 ﻿
+using ElevenNote.Data;
+using ElevenNote.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,6 +86,19 @@ namespace ElevenNote.Services
                 entity.Title = model.Title;
                 entity.Content = model.Content;
                 entity.ModifiedUtc = DateTimeOffset.UtcNow;
+                return ctx.SaveChanges() == 1;
+            }
+        }
+
+        public bool DeleteNote(int noteId)
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                var entity =
+                    ctx
+                        .Notes
+                        .Single(e => e.NoteId == noteId && e.OwnerId == _userId);
+                ctx.Notes.Remove(entity);
                 return ctx.SaveChanges() == 1;
             }
         }
